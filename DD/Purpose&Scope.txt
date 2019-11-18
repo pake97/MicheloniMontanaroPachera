@@ -1,0 +1,59 @@
+PURPOSE:
+
+The purpose of this document is to give a more detailed description of the architectural choises made
+to perform into the software system all the functionalities described into the RAS document.
+
+Therefore, if the RASD describes all the features that the system must indulge according to the stakeholders needs, the DD describes how
+it has been thought to convert all the high-level system requirements into the design structure.
+
+It provides guidance and material which is intended to assist technical staff to perform system testing and implementation and, moreover,
+to facilitate future maintenance and features extension.
+
+List of topics covered by the document:
+
+- High-level architecture.
+- Main Components, interfaces and deployment.
+- Runtime behavior.
+- Design Patterns.
+- UI details.
+- Mapping between requirements and architecture.
+- Implementation, integration and testing plan.
+
+
+
+SCOPE:
+Here a short review of SafeStreet scope reffered to what just stated in the RAS document.
+
+Safestreet is a software thought to make users able to report traffic violations to authorities.
+Anyone can report violations simply opening SafeStreet application and taking several pictures
+of them. For each violation is required at most 6 pictures in which 1 of the involved vehicle license plate.
+
+In order to guarantee to authorities the reliability of data gathered, which means that pictures can
+not be altered or modified, the latter can be only taken in the application itself.
+
+To make it easier the reporting process all other information are automatically mined by the system, such as time, date,
+geographical location and license plate; the last one is extracted by the system from the license plate picture. 
+
+Finally, user is asked to choose the violation type from a predefined set and confirm the above listed data that will be sent.
+
+If no errors occur, the system stores the violation, otherwise it is refused.
+
+Authorities, in order to access information concerning reports made by users, must log into the SafeStreet website.
+
+They are allowed to discard, modify and validate violations sent by users, in order to take into account only
+pertinent violations.
+Thanks to the data granted by the SafeStreet initiative and the validation performed by authorities, they can
+even decide to generate traffic tickets from validated violations. 
+
+Authorities can also upload information about accidents that occur on the municipality. 
+
+The software provides also a service to offer both users and authorities statistics
+computed on the available data. Obviously, in order to make statistics
+consistent and reliable, the latter are generated only by information validated by authorities.
+
+Statistics highlight streets or areas with the highest frequency of violations, the 
+vehicles that commit the most ones or the infractions trend that occurs
+over time. 
+
+Crossing data gathered by users and authorities, the system can identify potentially unsafe areas and suggest
+interventions in order to improve streets safety. 
