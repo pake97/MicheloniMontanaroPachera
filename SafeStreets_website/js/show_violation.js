@@ -1,15 +1,15 @@
-let buttonsee= document.getElementById('see');
-let divbu= document.getElementById('bubusettete');
-let buttonsee1= document.getElementById('see1');
-let divbu1= document.getElementById('bubusettete1');
-let buttonsee2= document.getElementById('see2');
-let divbu2= document.getElementById('bubusettete2');
-let divrow1= document.getElementById('row1');
-let divrow2= document.getElementById('row2');
-let divrow3= document.getElementById('row3');
-let buttonhide=document.getElementById('hide');
-let buttonhide1=document.getElementById('hide1');
-let buttonhide2=document.getElementById('hide2');
+var buttonsee= document.getElementById('see');
+var divbu= document.getElementById('bubusettete');
+var divrow1= document.getElementById('row1');
+var buttonhide=document.getElementById('hide');
+//let buttonsee1= document.getElementById('see1');
+//let divbu1= document.getElementById('bubusettete1');
+//let buttonsee2= document.getElementById('see2');
+//let divbu2= document.getElementById('bubusettete2');
+//let divrow2= document.getElementById('row2');
+//let divrow3= document.getElementById('row3');
+//let buttonhide1=document.getElementById('hide1');
+//let buttonhide2=document.getElementById('hide2');
 
 buttonsee.onclick=function(){
         divbu.className='show_vi';

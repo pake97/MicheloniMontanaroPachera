@@ -64,21 +64,21 @@
                         <div class="contact-form" style="align-self: center; border: 2px solid black;">
                             <h1>Insert new accident</h1>
                             <p>
-                              Inser data about new accident.
+                              Insert data about new accident.
                             </p>
                             <form id="main-contact-form" name="contact-form" method="post" action="contact-us.send.php" style="align-self: center;">
                                 <div class="form-group">
-                                    <input type="date" name="date" class="form-control" placeholder="Name" required>
+                                    <input id="accidentDate" type="date" name="date" class="form-control" placeholder="Name" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="adress" class="form-control" placeholder="Adress" required>
+                                    <input id="accidentAddress" type="text" name="adress" class="form-control" placeholder="Address" required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="accidentCheckBox">
                                     <h5>Select involved vehicles:</h5> 
                                     <input type="checkbox" name="vehicle1" value="Bike">Car<br>
                                     <input type="checkbox" name="vehicle2" value="Car">Bike<br>
-                                    <input type="checkbox" name="vehicle3" value="Boat" checked>Truck<br>
-                                    <input type="checkbox" name="vehicle4" value="Boat" checked>Motorbike<br>
+                                    <input type="checkbox" name="vehicle3" value="Boat">Truck<br>
+                                    <input type="checkbox" name="vehicle4" value="Boat">Motorbike<br>
                                 </div>
                                 <button type="submit" class="buttontime class inactive">Add accident</button>
                             </form>
