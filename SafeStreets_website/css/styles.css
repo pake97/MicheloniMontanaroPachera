@@ -419,3 +419,8 @@ USE THIS FILE TO INCLUDE YOUR OWN CSS STYLES
   display: none;
 }
 
+.violationInfo{
+  width: 30%; 
+  height: 25px; 
+  float: left;
+}

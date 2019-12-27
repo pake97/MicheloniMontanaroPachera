@@ -192,20 +192,7 @@ jQuery(function($) {'use strict';
 		});
 	});
 
-	// Contact form
-	var form = $('#main-contact-form');
-	form.submit(function(event){
-		event.preventDefault();
-		var form_status = $('<div class="form_status"></div>');
-		$.ajax({
-			url: $(this).attr('action'),
-			beforeSend: function(){
-				form.prepend( form_status.html('<p><i class="fa fa-spinner fa-spin"></i> Email is sending...</p>').fadeIn() );
-			}
-		}).done(function(data){
-			form_status.html('<p class="text-success">Thank you for contact us.</p>').delay(3000).fadeOut();
-		});
-	});
+
 
 	//Pretty Photo
 	$("a[rel^='prettyPhoto']").prettyPhoto({
@@ -227,6 +214,7 @@ jQuery(function($) {'use strict';
 			position: myLatlng,
 			map: map
 		});*/
+		//marker.setMap(map);
 		let latitude1=45.46443366236;
 		let latitude2=45.444343639236;
 		let latitude3=45.474045639236;
@@ -242,7 +230,6 @@ jQuery(function($) {'use strict';
 			{lat: latitude4, lng: longitude4},
 			{lat: latitude1, lng: longitude1},
 		  ];
-		
 		  // Construct the polygon.
 		  var bermudaTriangle = new google.maps.Polygon({
 			paths: triangleCoords,

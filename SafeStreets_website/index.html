@@ -36,31 +36,28 @@
                 </div>
                 <div style="height:250px"></div>
     <section id="contact">
-        
                     <div style="height:400px"></div>
                     <div class="container-wrapper">
                         <div class="container">
                             <div class="row" style="align-content: center;">
-                                    <div class="contact-form" style="align-self: center;margin-top: 1000;">
+                                    <div class="contact-form" style="align-self: center; margin-top: 1000;">
                                             <h1>LOGIN</h1>
                                             <p>
                                               Login with credentials.
                                             </p>
                                             <form id="main-contact-form" name="contact-form" method="post" style="align-self: center;">
                                                 <div class="form-group">
-                                                    <input type="email" name="email" class="form-control" placeholder="city@gmail.com" required>
+                                                    <input type="email" id='user' name="user" class="form-control" placeholder="city@gmail.com" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="password" name="adress" class="form-control" required>
+                                                    <input type="password" id='password' name="password" class="form-control" required>
                                                 </div>
-                                                <button type="Login" class="buttontime class inactive"><a href="violation.html" style="color: black;">Login</button>
+                                            <button type="Login" class="buttontime class inactive" onclick="login()"><a href="violation.html" style="color: black;">Login</button>
                                             </form>
                                     </div>
                             </div>
-                            </div>
                         </div>
-        </section>
-    
+                    </div>
         </div><!--/.container-->
     </section><!--/#portfolio-->
 
@@ -80,11 +77,11 @@
     <script src="js/wow.min.js"></script>
     <script src="js/main.js"></script>
     <!-- Our work outside template-->
+    <script src="js/login.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/firebase.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
 </body>
 </html>

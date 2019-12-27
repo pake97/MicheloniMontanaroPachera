@@ -177,73 +177,21 @@ function createDiv()
         div17=document.createElement('div');
         div17.setAttribute("style","width: 15%; height: 25px; float: left;padding-top: 5px;");
         div16.appendChild(div17);
-        strong1=document.createElement('strong');
-        strong1.className='class';
-        strong1.setAttribute("style","font-size: large;");
-        strong1.innerHTML=doc.getLicensePlate();
-        div17.appendChild(strong1);
+        strong3=document.createElement('strong');
+        strong3.className='class';
+        strong3.setAttribute("style","font-size: large;");
+        strong3.innerHTML=doc.getLicensePlate();
+        div17.appendChild(strong3);
 
 
         div18=document.createElement('div');
         div18.setAttribute("style","width: 15%; height: 25px; float: left;padding-top: 5px;");
         div16.appendChild(div18);
-        select=document.createElement('select');
-        select.className='select-css1 class';
-        opt1=document.createElement('option');
-        opt1.setAttribute("value","dp");
-        opt1.innerHTML="Double parking";
-        opt2=document.createElement('option');
-        opt2.setAttribute("value","ph");
-        opt2.innerHTML="Park on handicap";
-        opt3=document.createElement('option');
-        opt3.setAttribute("value","pc");
-        opt3.innerHTML="Park on cycle-lane";
-        opt4=document.createElement('option');
-        opt4.setAttribute("value","ps");
-        opt4.innerHTML="Park on sidewalk";
-        opt5=document.createElement('option');
-        opt5.setAttribute("value","up");
-        opt5.innerHTML="Unpaid park";
-        opt6=document.createElement('option');
-        opt6.setAttribute("value","fp");
-        opt6.innerHTML="Forbidden park";
-        select.appendChild(opt1);
-        select.appendChild(opt2);
-        select.appendChild(opt3);
-        select.appendChild(opt4);
-        select.appendChild(opt5);
-        select.appendChild(opt6);
-        div18.appendChild(select);
-
-
-        div19=document.createElement('div');
-        div19.setAttribute("style","width: 100%; display: inline-block; margin-top:20px;padding-top: 20px;padding-bottom: 1px;padding-left: 50px;padding-right: 40px;");
-        div16.appendChild(div19);
-
-
-        div20=document.createElement('div');
-        div20.setAttribute("style","width: 60%; height: 10px; float: left;");
-
-        div21=document.createElement('div');
-        div21.setAttribute("style","width: 20%; height: 10px; float: left;");
-
-        btnhi1=document.createElement('button');
-        btnhi1.className="buttonsee class active";
-        btnhi1.id="val"+i.toString();
-        btnhi1.innerHTML="Validate";
-        div21.appendChild(btnhi1);
-
-        div22=document.createElement('div');
-        div22.setAttribute("style","width: 20%; height: 10px; float: left;");
-
-        btnhi2=document.createElement('button');
-        btnhi2.className="buttonsee class inactive";
-        btnhi2.id="del"+i.toString();
-        btnhi2.innerHTML="Delete";
-        div22.appendChild(btnhi2);
-        div19.appendChild(div20);
-        div19.appendChild(div21);
-        div19.appendChild(div22);
+        strong4=document.createElement('strong');
+        strong4.className='class';
+        strong4.setAttribute("style","font-size: large;");
+        strong4.innerHTML=doc.getType();
+        div18.appendChild(strong4);
         i++;
     });
 };
@@ -267,15 +215,6 @@ function setClicks()
             divrow1=document.getElementById('row'+j.toString());
             divB1.className='hidden_vi';
             divrow1.className='violationRow';
-        };
-
-        btn2.onclick=function(){
-            del=document.getElementById('newid'+j.toString());
-            del.parentNode.removeChild(del);
-        };
-        btn3.onclick=function(){
-            del=document.getElementById('newid'+j.toString());
-            del.parentNode.removeChild(del);
         };
     }
 
