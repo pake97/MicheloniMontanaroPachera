@@ -199,10 +199,12 @@ jQuery(function($) {'use strict';
 		social_tools: false
 	});
 
+	/*
 	//Google Map
 	var latitude = $('#google-map').data('latitude');
 	var longitude = $('#google-map').data('longitude');
 	function initialize_map() {
+		
 		var myLatlng = new google.maps.LatLng(latitude,longitude);
 		var mapOptions = {
 			zoom: 14,
@@ -213,7 +215,7 @@ jQuery(function($) {'use strict';
 		/*var marker = new google.maps.Marker({
 			position: myLatlng,
 			map: map
-		});*/
+		});
 		//marker.setMap(map);
 		let latitude1=45.46443366236;
 		let latitude2=45.444343639236;
@@ -239,8 +241,9 @@ jQuery(function($) {'use strict';
 			fillColor: '#FF0000',
 			fillOpacity: 0.35,
 			map:map
-		  });
+	});
+	map1();
 	}
 	google.maps.event.addDomListener(window, 'load', initialize_map);
-
+*/
 });

@@ -59,7 +59,7 @@
  
 
     <section id="contact">
-        <div id="google-map" style="height:650px" data-latitude="4.688467" data-longitude="-74.051289"></div>
+        <div id="suggestions-map" style="height:650px" data-latitude="4.688467" data-longitude="-74.051289"></div>
         <div class="container-wrapper">
             <div class="container">
                 <div class="row">
@@ -69,11 +69,11 @@
                             <form style="align-self: center;">
                                 <div class="form-group">
                                     <h5>Select suggestions's type:</h5> 
-                                    <input type="checkbox" name="sugg1" value="Bike"> Camera<br>
-                                    <input type="checkbox" name="sugg2" value="Car"> Barrier<br>
-                                    <input type="checkbox" name="sugg3" value="Boat" checked> Police control<br>
+                                    <input type="checkbox" id="suggType1" name="sugg1" value="camera" > Camera<br>
+                                    <input type="checkbox" id="suggType2" name="sugg2" value="barrier" > Barrier<br>
+                                    <input type="checkbox" id="suggType3" name="sugg3" value="police control" > Police control<br>
                                 </div>
-                                <button type="submit" class="buttontime class inactive">Show</button>
+                                <button type="button" class="buttontime class inactive" id="show_suggestions">Show</button>
                             </form>
                             
 
@@ -86,7 +86,7 @@
 
    
 
-    <script src="js/jquery.js"></script>
+    <!--<script src="js/jquery.js"></script>-->
     <script src="js/bootstrap.min.js"></script>
     <script src="http://maps.google.com/maps/api/js?key=AIzaSyA1_yQpHqyZJ0I-uiBOPr3kRgACNbiste8&sensor=true"></script>
     <script src="js/owl.carousel.min.js"></script>
@@ -100,8 +100,11 @@
     <!-- Our work outside template-->
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/suggestion_map.js"></script>
+    <script type="text/javascript" src="js/SuggestionWrapper.js"></script>
 </body>
 </html>

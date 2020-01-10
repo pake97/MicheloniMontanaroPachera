@@ -1,36 +1,45 @@
 var database = firebase.firestore();
-var dbRef= database.collection("violations").where("validated","==",false);
+var dbRef= database.collection("violations").where("validated","==",true);
 let violation_list=[];
 let body = document.getElementsByClassName("container")[1];
 let i=0;
-
+let heights=[600,500,400,300,250,200];
 
 dbRef.get().then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
         console.log(`${doc.id} =>`, doc.data());
         var listPic=[];
-        listPic.push(doc.data().img1);
+        listPic.push(getImgUrl(doc.data().img1));
         if(doc.data().img2!=null)
-            listPic.push(doc.data().img2);
+            listPic.push(getImgUrl(doc.data().img2));
         if(doc.data().img3!=null)
-            listPic.push(doc.data().img3);
+            listPic.push(getImgUrl(doc.data().img3));
         if(doc.data().img4!=null)
-            listPic.push(doc.data().img4);
+            listPic.push(getImgUrl(doc.data().img4));
         if(doc.data().img5!=null)
-            listPic.push(doc.data().img5);
+            listPic.push(getImgUrl(doc.data().img5));
         if(doc.data().imgT!=null)
-            listPic.push(doc.data().imgT);
+            listPic.push(getImgUrl(doc.data().imgT));
+        console.log(getImgUrl(doc.data().img1));
         violation_list.push(new Violation(doc.id,doc.data().address,doc.data().date,doc.data().type,doc.data().plate,listPic,listPic.length));
     });
     createDiv();
     setClicks();
 });
 
-var storage = firebase.storage();
-var storeRef = storage.ref();
-storeRef.child('violations_pic/v1.jpg').getDownloadURL().then(function(url) {
-    console.log(url);
-});
+function getImgUrl(imgName){
+    var storage = firebase.storage();
+    var storeRef = storage.ref();
+    let imgUrl="https://firebasestorage.googleapis.com/v0/b/safestreets-30d5e.appspot.com/o/v1.jpg?alt=media&token=df05b895-4c74-4767-8af7-c23c996b819e";
+    storeRef.child('v1.jpg').getDownloadURL().then(function(url) {
+        imgUrl=url.toString();
+        console.log(url);
+    }).catch(function(error) {
+       console.log("not found in storage");
+      });
+    console.log(imgUrl);
+    return imgUrl;
+}
 /*
 storeRef.child('violations_pic/').listAll().then(function(result){
     result.item.forEach(function(element){
@@ -116,41 +125,66 @@ function createDiv()
         div8.appendChild(div12);
 
         //ciclo for, dim = 100/numvio
+        let width= 99/doc.getNumPics();
+        doc.getPics().forEach((image)=>{
+            d = document.createElement('div');
+            d.setAttribute("style","width:"+width.toString()+"%; float:left;");
+            im = document.createElement('img');
+            im.setAttribute("src",image.toString());
+            im.setAttribute("height",heights[doc.getNumPics()-1].toString()+"px");
+            d.appendChild(im);
+            div12.appendChild(d);
+        });
+        /*
+        for(let n=0;n<doc.getNumPics()-1;n++);
+        {
+            d = document.createElement('div');
+            d.setAttribute("style","width:"+width.toString()+"%; float:left;");
+            im = document.createElement('img');
+            console.log(n);
+            im.setAttribute("src",(doc.getPics()[n]).toString());
+            im.setAttribute("height","400px");
+            d.appendChild(im);
+            div12.appendChild(d);
+        }
+    */
+        /*
 
-        div13=document.createElement('div');
-        div13.setAttribute("style","width: 33%; float: left;");
-        
+    div13=document.createElement('div');
+    div13.setAttribute("style","width: 33%; float: left;");
+    
 
-        div14=document.createElement('div');
-        div14.setAttribute("style","width: 33%; float: left;");
-        
+    div14=document.createElement('div');
+    div14.setAttribute("style","width: 33%; float: left;");
+    
 
-        div15=document.createElement('div');
-        div15.setAttribute("style","width: 33%; float: left;");
-        
-        img=document.createElement('img');
-        img.setAttribute("src","images/violation/v1.jpg");
-        img.setAttribute("height","400px");
-        img.className="class";
-        img1=document.createElement('img');
-        img1.setAttribute("src","images/violation/v1.jpg");
-        img1.setAttribute("height","400px");
-        img1.className="class";
-        img2=document.createElement('img');
-        img2.setAttribute("src","images/violation/v1.jpg");
-        img2.setAttribute("height","400px");
-        img2.className="class";
-
-        div13.appendChild(img);
-        div14.appendChild(img1);
-        div15.appendChild(img2);
-
-        div12.appendChild(div13);
-        div12.appendChild(div14);
-        div12.appendChild(div15);
+    div15=document.createElement('div');
+    div15.setAttribute("style","width: 33%; float: left;");
+    
 
 
+    img=document.createElement('img');
+    img.setAttribute("src","images/violation/v1.jpg");
+    img.setAttribute("height","400px");
+    img.className="class";
+    img1=document.createElement('img');
+    img1.setAttribute("src","images/violation/v1.jpg");
+    img1.setAttribute("height","400px");
+    img1.className="class";
+    img2=document.createElement('img');
+    img2.setAttribute("src","images/violation/v1.jpg");
+    img2.setAttribute("height","400px");
+    img2.className="class";
 
+    div13.appendChild(img);
+    div14.appendChild(img1);
+    div15.appendChild(img2);
+
+    div12.appendChild(div13);
+    div12.appendChild(div14);
+    div12.appendChild(div15);
+
+        */
         div16=document.createElement('div');
         div16.setAttribute("style","width: 100%; display: inline-block; padding-top: 20px;padding-bottom: 20px;padding-left: 50px;");
         div8.appendChild(div16);

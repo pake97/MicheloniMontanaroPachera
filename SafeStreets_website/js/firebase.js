@@ -3,52 +3,51 @@ var dbRef= database.collection("violations").where("validated","==",false);
 let violation_list=[];
 let body = document.getElementsByClassName("container")[1];
 let i=0;
-
+let heights=[600,500,400,300,250,200];
 
 dbRef.get().then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
         console.log(`${doc.id} =>`, doc.data());
-        var listPic=[];
-        listPic.push(doc.data().img1);
+        let listPic=[];
+        listPic.push(getImgUrl(doc.data().img1));
         if(doc.data().img2!=null)
-            listPic.push(doc.data().img2);
+            listPic.push(getImgUrl(doc.data().img2));
         if(doc.data().img3!=null)
-            listPic.push(doc.data().img3);
+            listPic.push(getImgUrl(doc.data().img3));
         if(doc.data().img4!=null)
-            listPic.push(doc.data().img4);
+            listPic.push(getImgUrl(doc.data().img4));
         if(doc.data().img5!=null)
-            listPic.push(doc.data().img5);
+            listPic.push(getImgUrl(doc.data().img5));
         if(doc.data().imgT!=null)
-            listPic.push(doc.data().imgT);
+            listPic.push(getImgUrl(doc.data().imgT));
+        console.log(getImgUrl(doc.data().img1));
         violation_list.push(new Violation(doc.id,doc.data().address,doc.data().date,doc.data().type,doc.data().plate,listPic,listPic.length));
     });
     createDiv();
     setClicks();
 });
 
-var storage = firebase.storage();
-var storeRef = storage.ref();
-storeRef.child('violations_pic/v1.jpg').getDownloadURL().then(function(url) {
-    console.log(url);
-});
-/*
-storeRef.child('violations_pic/').listAll().then(function(result){
-    result.item.forEach(function(element){
-        element.getDownloadURL().then(function(url) {
-            console.log(url);
-        })
-    })
-});*/
+function getImgUrl(imgName){
+    var storage = firebase.storage();
+    var storeRef = storage.ref();
+    let imgUrl="https://firebasestorage.googleapis.com/v0/b/safestreets-30d5e.appspot.com/o/v1.jpg?alt=media&token=df05b895-4c74-4767-8af7-c23c996b819e";
+    storeRef.child('v1.jpg').getDownloadURL().then(function(url) {
+        imgUrl=url.toString();
+        console.log(url);
+    }).catch(function(error) {
+       console.log("not found in storage");
+      });
+    console.log(imgUrl);
+    return imgUrl;
+}
 
 function createDiv()
 {
     violation_list.forEach((doc)=>{
-        console.log(doc);
         newdiv = document.createElement('div');  
         newdiv.id = 'newid'+i.toString();
         newdiv.className="violationwrapper";
         body.appendChild(newdiv); 
-
 
         div2=document.createElement('div');
         div2.id='row'+i.toString();
@@ -85,8 +84,6 @@ function createDiv()
         button.innerHTML="see";
         div7.appendChild(button);
         
-
-
         div8=document.createElement('div');
         div8.id="hidden"+i.toString();
         div8.className="hidden_vi";
@@ -117,6 +114,32 @@ function createDiv()
 
         //ciclo for, dim = 100/numvio
 
+        
+            let width= 99/doc.getNumPics();
+            doc.getPics().forEach((image)=>{
+                d = document.createElement('div');
+                d.setAttribute("style","width:"+width.toString()+"%; float:left;");
+                im = document.createElement('img');
+                im.setAttribute("src",image.toString());
+                im.setAttribute("height",heights[doc.getNumPics()-1].toString()+"px");
+                d.appendChild(im);
+                div12.appendChild(d);
+            });
+            /*
+            for(let n=0;n<doc.getNumPics()-1;n++);
+            {
+                d = document.createElement('div');
+                d.setAttribute("style","width:"+width.toString()+"%; float:left;");
+                im = document.createElement('img');
+                console.log(n);
+                im.setAttribute("src",(doc.getPics()[n]).toString());
+                im.setAttribute("height","400px");
+                d.appendChild(im);
+                div12.appendChild(d);
+            }
+        */
+            /*
+
         div13=document.createElement('div');
         div13.setAttribute("style","width: 33%; float: left;");
         
@@ -128,6 +151,8 @@ function createDiv()
         div15=document.createElement('div');
         div15.setAttribute("style","width: 33%; float: left;");
         
+
+
         img=document.createElement('img');
         img.setAttribute("src","images/violation/v1.jpg");
         img.setAttribute("height","400px");
@@ -149,7 +174,7 @@ function createDiv()
         div12.appendChild(div14);
         div12.appendChild(div15);
 
-
+            */
 
         div16=document.createElement('div');
         div16.setAttribute("style","width: 100%; display: inline-block; padding-top: 20px;padding-bottom: 20px;padding-left: 50px;");
@@ -188,6 +213,7 @@ function createDiv()
         div18.setAttribute("style","width: 15%; height: 25px; float: left;padding-top: 5px;");
         div16.appendChild(div18);
         select=document.createElement('select');
+        select.id='selection'+i.toString();
         select.className='select-css1 class';
         opt1=document.createElement('option');
         opt1.setAttribute("value","dp");
@@ -269,14 +295,46 @@ function setClicks()
             divrow1.className='violationRow';
         };
 
+        var sel=document.getElementById('selection'+j.toString());
+        var type=sel.options[sel.selectedIndex].text;
+
+
         btn2.onclick=function(){
             del=document.getElementById('newid'+j.toString());
+            validateViolation(violation_list[j].getId(),type);
             del.parentNode.removeChild(del);
         };
         btn3.onclick=function(){
             del=document.getElementById('newid'+j.toString());
+            deleteViolation(violation_list[j].getId());
             del.parentNode.removeChild(del);
         };
     }
+};
+
+
+function deleteViolation(id)
+{
+    database.collection("violations").doc(id).delete().then(function() {
+        console.log("Violation successfully deleted!");
+    }).catch(function(error) {
+        console.error("Error removing violation: ", error);
+    });
+};
+
+function validateViolation(id,newType){
+	
+	var violationRef = database.collection("violations").doc(id);
+	
+	violationRef.update({
+        type:newType,
+	    validated: true
+	})
+	.then(function() {
+	    console.log("Violation successfully updated!");
+	})
+	.catch(function(error) {
+	    console.error("Error updating violation: ", error);
+	});
 
 };
