@@ -50,7 +50,6 @@ function map3(typeS){
             marker.setMap(map);
             }
     });
-    
 
 };
 

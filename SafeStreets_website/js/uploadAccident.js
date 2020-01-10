@@ -44,24 +44,21 @@ function getPoint(address){
     
       request.onload = function() {
         console.log("porcodio");
-        //if (request.status == 200){ 
+        if (request.status == 200){ 
           resolve(JSON.parse(request.responseText));
-          /*var latitude = data.results[0].geometry.location.lat;
-          var longitude = data.results[0].geometry.location.lng;
-          resolve(new firebase.firestore.GeoPoint(latitude,longitude));*/
-       /* } else if (request.status <= 500){                    
+       } else if (request.status <= 500){                    
           console.log("unable to geocode! Response code: " + request.status);
           var data = JSON.parse(request.responseText);
           console.log(data.status.message);
         } else {
           console.log("server error");
-        }*/
+        }
 
       };
     
-      /*request.onerror = function() {
+      request.onerror = function() {
         console.log("unable to connect to Google Geocoding API server");        
-      };*/
+      };
 
     })
 
