@@ -1,3 +1,13 @@
+/**
+ * firebase.js
+ * This module manages the logic and the UI of the violations section of the page
+ * UI: there is a function to draw a container for each violation to display
+ * LOGIC: There is a function to query the database in order to get all the violations not validated yet.
+ *        A function to delete the selected violation from the database.
+ *        A function to validate a violation and eventually modify it.
+ *        A function to handle the logic of the buttons of each violation container.
+ */
+
 var database = firebase.firestore();
 var dbRef= database.collection("violations").where("validated","==",false);
 let body = document.getElementsByClassName("container")[1];
@@ -5,6 +15,13 @@ var i=0;
 let heights=[600,500,400,300,250,200];
 let list = [];
 
+/**
+ * dbRef.get(): this function queries the database in order to get the list of violations not validated yet. 
+ *              for each violation's image it calls a function to retreive the corresponding url from the cloud storage.
+ *              Then it calls the function to construct the container to hold it on the page.
+ * @param listPic:  list holding the urls of the images of each violation
+ * @param list_promises: list holding the promises returned from the function to retrieve the url of the images.
+ */
 dbRef.get().then((querySnapshot) => {
 
     querySnapshot.forEach((doc) => {
@@ -48,6 +65,12 @@ dbRef.get().then((querySnapshot) => {
     });
 });
 
+/**
+ * getImgUrl(imgName): this function takes ad imput the name of an image and returns its ulr from the cloud storage
+ * @param storeRef: reference to the cloud storage
+ * @param peomise: a promise to hold the request of getting image's url from the storage
+ * @return promise: the function returns the promise.
+ */
 function getImgUrl(imgName){
     imgName = imgName.split("/")[imgName.split("/").length-1];
     var storeRef= firebase.storage().ref();
@@ -58,6 +81,11 @@ function getImgUrl(imgName){
     return promise;
 }
 
+/**
+ * createDiv(doc): this function manages the creation of the container to hold the violation in the page.
+ *                 Then it calls the function to to handle the logic of its buttons.
+ * @params div: a set of div to construct the container to hold violations.
+ */
 function createDiv(doc){
 
     newdiv = document.createElement('div');  
@@ -129,8 +157,6 @@ function createDiv(doc){
     div8.appendChild(div12);
 
     //ciclo for, dim = 100/numvio
-
-    
         let width= 99/doc.getNumPics();
         doc.getPics().forEach((image)=>{
             d = document.createElement('div');
@@ -182,22 +208,22 @@ function createDiv(doc){
     select.id='selection'+i.toString();
     select.className='select-css1 class';
     opt1=document.createElement('option');
-    opt1.setAttribute("value","dp");
+    opt1.setAttribute("value","double_parking");
     opt1.innerHTML="Double parking";
     opt2=document.createElement('option');
-    opt2.setAttribute("value","ph");
+    opt2.setAttribute("value","handicap_parking");
     opt2.innerHTML="Park on handicap";
     opt3=document.createElement('option');
-    opt3.setAttribute("value","pc");
+    opt3.setAttribute("value","cycle_parking");
     opt3.innerHTML="Park on cycle-lane";
     opt4=document.createElement('option');
-    opt4.setAttribute("value","ps");
+    opt4.setAttribute("value","sidewalk_parking");
     opt4.innerHTML="Park on sidewalk";
     opt5=document.createElement('option');
-    opt5.setAttribute("value","up");
+    opt5.setAttribute("value","unpaid_parking");
     opt5.innerHTML="Unpaid park";
     opt6=document.createElement('option');
-    opt6.setAttribute("value","fp");
+    opt6.setAttribute("value","forbidden_parking");
     opt6.innerHTML="Forbidden park";
     select.appendChild(opt1);
     select.appendChild(opt2);
@@ -241,13 +267,15 @@ function createDiv(doc){
     i++;
 };
 
+/**
+ * setClicks(j,doc): this function manages the activation of buttons contained in each violation container
+ */
 function setClicks(j,doc){
         btn=document.getElementById('see'+j.toString());
         btn1=document.getElementById('btnhide'+j.toString());
         btn2=document.getElementById('val'+j.toString());
         btn3=document.getElementById('del'+j.toString());
         btn.onclick=function(){
-            console.log
             divB1=document.getElementById('hidden'+j.toString());
             divrow1=document.getElementById('row'+j.toString());
             divB1.className='show_vi';
@@ -261,7 +289,7 @@ function setClicks(j,doc){
         };
 
         var sel=document.getElementById('selection'+j.toString());
-        var type=sel.options[sel.selectedIndex].text;
+        var type=sel.options[sel.selectedIndex].value;
 
 
         btn2.onclick=function(){

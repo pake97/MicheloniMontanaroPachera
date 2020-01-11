@@ -79,9 +79,6 @@ function addChart(){
 }
 
 
-
-
-
 function getViolationLists(){
     list_label=[];
     list_value=[];
@@ -204,17 +201,7 @@ function getViolationLists(){
                             console.log(list_value);
                             addChart();
                     });
-                    }/*
-                    ref.collection("year").doc((new Date().getFullYear()).toString()).collection("month").doc((new Date().getMonth()+1).toString()).collection("day").get().then((querySnapshot) => {
-                        querySnapshot.forEach((doc) => {
-                            
-                            list_value.push(doc.data().Violation_number);
-                            list_label.push(doc.id);
-                        });
-                        console.log(list_label);
-                        console.log(list_value);
-                        addChart();
-                    });*/
+                    }
                     break;
                 }
         }

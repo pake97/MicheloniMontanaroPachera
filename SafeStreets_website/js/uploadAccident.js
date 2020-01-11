@@ -43,7 +43,6 @@ function getPoint(address){
       request.send();
     
       request.onload = function() {
-        console.log("porcodio");
         if (request.status == 200){ 
           resolve(JSON.parse(request.responseText));
        } else if (request.status <= 500){                    
