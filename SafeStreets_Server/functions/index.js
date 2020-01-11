@@ -1,12 +1,24 @@
+/**
+ * index.js
+ * This module contains all the functions and the main logic features of the application's server:
+ * A function to return current date and time.
+ * A function to add random accidents in the cloud storage.
+ * A function to add random violations in the cloud storage.
+ * A function to add random suggestions in the cloud storage.
+ * A function build an empty statistics tree in the cloud storage.
+ * A function to initialize all the statistics tree nodes to zero.
+ * A function to compute all the statistics and update the whole statistics tree(based on all the validated violations).
+ * A function to compute daily statistics(based on daily validated violations).
+ * A function to compute monthly suggestions(based on monthly validated violations).
+ */
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const firebase = require('firebase');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const increment = admin.firestore.FieldValue.increment(1);
 admin.initializeApp();
 
-//GLOBAL VARABLES
+//global variables
 let db = admin.firestore();
 let violations_list=["cycle_parking","double_parking","forbidden_parking","handicap_parking","sidewalk_parking","unpaid_parking"]
 let years_list=[2018,2019,2020];
@@ -19,13 +31,13 @@ let violationsToAdd = 50;
 let suggestionsToAdd = 20;
 let Suggestion_threshold = 2;
 
-//COORDINATES OF MILANO CITY
+//coordinates of milano city
 let lat_lowerBound=45.443;
 let lat_upperBound=45.505;
 let long_lowerBound=9.150;
 let long_upperBound=9.230;
 
-//EACH VIOLATION HAS A CORRESPONDING SUGGESTION
+//each violation's type has a corresponding suggestion.
 var suggestionsCorrespondings = {
     "cycle_parking": "barrier",
     "double_parking": "camera",
@@ -35,12 +47,17 @@ var suggestionsCorrespondings = {
     "unpaid_parking": "police control"
 }
 
-//FUNCTION TO GET THE NUMBER OF DAYS IN A MONTH
+/**
+ * daysInMonth(year, month): this function take ad input an year and a month and returns the number of days in that month.
+ * @return: number of days in the month.
+ */
 function daysInMonth (year, month) {
     return new Date(year, month, 0).getDate();
 }
 
-//FUNCTION TO CONVERT DATE AND TIME ACCORDING TO THE RIGHT TIME ZONE
+/**
+ * convertTimeZone(date): this function convert a date's hours according to the right timezone.
+ */
 function convertTimeZone(date){
     date.setHours(date.getHours()+offset);
 
@@ -59,7 +76,9 @@ function convertTimeZone(date){
     }
 }
 
-//FUNCTION TO ADD A NEW YEAR TO THE STATISTIC TREE
+/**
+ * addYear(newYear): this function adds a new "year" brach to the statistics tree.
+ */
 function addYear(newYear){
 
     for(var violation=0;violation<violations_list.length;violation++){
@@ -210,6 +229,16 @@ function groupBy(array, key) {
         );
         return result;
     }, {});   
+}
+
+function initializeNode(node){
+
+    var promise = new Promise((resolve,reject) =>{
+        resolve( node.set({ Violation_number: 0 }))
+    }).catch(error =>{ console.log(error) })
+
+    return promise;
+
 }
 
 //FUNCTION TO GET CURRENT DATE AND TIME
@@ -377,11 +406,13 @@ exports.computeStatisticsOnce = functions.https.onRequest((request, response) =>
 
         var validatedViolations = [];
         snapshot.forEach(doc => {
-            validatedViolations.push({
-                type: doc.data().type,
-                date: doc.data().date.toDate()
-            })
-            convertTimeZone(validatedViolations[validatedViolations.length-1].date);
+            if(violations_list.includes(doc.data().type)){
+                validatedViolations.push({
+                    type: doc.data().type,
+                    date: doc.data().date.toDate()
+                })
+                convertTimeZone(validatedViolations[validatedViolations.length-1].date);
+            }
         })
 
         //FUNCTION TO CHECKS IF THE STATISTICS TREE HAS ALL THE NECESSARY YEARS, OTHERWISE IT ADDS THEM
@@ -393,8 +424,10 @@ exports.computeStatisticsOnce = functions.https.onRequest((request, response) =>
             for(var i=0;i<validatedViolations.length;i++){
                 if(!yearsInTree.includes(validatedViolations[i].date.getFullYear())){
                     addYear(validatedViolations[i].date.getFullYear());
+                    yearsInTree.push(validatedViolations[i].date.getFullYear());
                 }
             }
+
 
             //UPDATE THE STATISTIC TREE WITH NEW VALUES
             for(var j=0;j<validatedViolations.length;j++){
@@ -442,11 +475,13 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
         
         var validatedViolationsDaily = [];
         snapshot.forEach(doc => {
-            validatedViolationsDaily.push({
-                type: doc.data().type,
-                date: doc.data().date.toDate()
-            })
-            convertTimeZone(validatedViolationsDaily[validatedViolationsDaily.length-1].date);
+            if(violations_list.includes(doc.data().type)){
+                validatedViolationsDaily.push({
+                    type: doc.data().type,
+                    date: doc.data().date.toDate()
+                })
+                convertTimeZone(validatedViolationsDaily[validatedViolationsDaily.length-1].date);
+            }
         })
 
         //FUNCTION TO CHECKS IF CURRENT YEAR IS PRESENT IN THE STATISTC TREE
@@ -458,8 +493,10 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
             let currentDate = new Date();
             convertTimeZone(currentDate);
             let currentYear = currentDate.getFullYear();
-            if(!yearsInTree.includes(currentYear))
+            if(!yearsInTree.includes(currentYear)){
                 addYear(currentYear);
+                yearsInTree.push(currentYear);
+            }
 
             //FUNCTION TO UPDATE VALUES OF THE STATISTICS TREE
             for(var i=0;i<validatedViolationsDaily.length;i++){
@@ -515,10 +552,12 @@ exports.computeSuggestions = functions.pubsub.schedule('00 00 1 * *').timeZone('
         
         var ViolationsSuggestions = [];
         snapshot.forEach(doc => {
-            ViolationsSuggestions.push({
-                type: doc.data().type,
-                location: new admin.firestore.GeoPoint(doc.data().position.latitude,doc.data().position.longitude),
-            })
+            if(violations_list.includes(doc.data().type)){
+                ViolationsSuggestions.push({
+                    type: doc.data().type,
+                    location: new admin.firestore.GeoPoint(doc.data().position.latitude,doc.data().position.longitude),
+                })
+            }
         })
 
         var promise_list = [];
