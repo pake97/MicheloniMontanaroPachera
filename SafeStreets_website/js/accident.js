@@ -1,6 +1,6 @@
 /**
  * accident.js
- * This module contains the accident class
+ * This module contains the Accident class.
  */
 
 class Accident{

@@ -1,10 +1,11 @@
 /**
  * firebase.js
- * This module manages the logic and the UI of the violations section of the page
- * UI: there is a function to draw a container for each violation to display
+ * This module manages the logic and the UI of the "violations" section of the page. It contains both UI and LOGIC components.
+ * UI: there is a function to draw a container for each violation to display.
  * LOGIC: There is a function to query the database in order to get all the violations not validated yet.
  *        A function to delete the selected violation from the database.
  *        A function to validate a violation and eventually modify it.
+ *        A function to retrieve the url of the images of each violation.
  *        A function to handle the logic of the buttons of each violation container.
  */
 
@@ -17,7 +18,7 @@ let list = [];
 
 /**
  * dbRef.get(): this function queries the database in order to get the list of violations not validated yet. 
- *              for each violation's image it calls a function to retreive the corresponding url from the cloud storage.
+ *              for each violation's image it calls a function to retreive its url.
  *              Then it calls the function to construct the container to hold it on the page.
  * @param listPic:  list holding the urls of the images of each violation
  * @param list_promises: list holding the promises returned from the function to retrieve the url of the images.
@@ -66,9 +67,9 @@ dbRef.get().then((querySnapshot) => {
 });
 
 /**
- * getImgUrl(imgName): this function takes ad imput the name of an image and returns its ulr from the cloud storage
+ * getImgUrl(imgName): this function takes as imput the name in the storage of an image and returns its ulr.
  * @param storeRef: reference to the cloud storage
- * @param peomise: a promise to hold the request of getting image's url from the storage
+ * @param peomise: a promise to hold the request of getting image's url.
  * @return promise: the function returns the promise.
  */
 function getImgUrl(imgName){
@@ -85,6 +86,7 @@ function getImgUrl(imgName){
  * createDiv(doc): this function manages the creation of the container to hold the violation in the page.
  *                 Then it calls the function to to handle the logic of its buttons.
  * @params div: a set of div to construct the container to hold violations.
+ * @param i: variable holding the progressive id of each violation container and its nested elements.
  */
 function createDiv(doc){
 
@@ -156,7 +158,7 @@ function createDiv(doc){
     div12.setAttribute("style","width: 100%; display: inline-block; padding-top: 20px;padding-bottom: 20px;");
     div8.appendChild(div12);
 
-    //ciclo for, dim = 100/numvio
+    //for cycle, dim = 100/numvio
         let width= 99/doc.getNumPics();
         doc.getPics().forEach((image)=>{
             d = document.createElement('div');
@@ -268,7 +270,9 @@ function createDiv(doc){
 };
 
 /**
- * setClicks(j,doc): this function manages the activation of buttons contained in each violation container
+ * setClicks(j,doc): This function manages the activation of buttons contained in each violation's container. 
+ * @params btn: set of buttons to activate
+ * @param type: variable holding the violation type 
  */
 function setClicks(j,doc){
         btn=document.getElementById('see'+j.toString());
@@ -291,12 +295,22 @@ function setClicks(j,doc){
         var sel=document.getElementById('selection'+j.toString());
         var type=sel.options[sel.selectedIndex].value;
 
-
+        /**
+         * btn2.onclick: this function manages the logic of the "validate" button.
+         *               It calls the function to manage the corresponding operation on the database.
+         * @param val: variable holding the "validate" button  of the current violation
+         */
         btn2.onclick=function(){
             val=document.getElementById('newid'+j.toString());
             validateViolation(doc.getId(),type);
             val.parentNode.removeChild(val);
         };
+
+        /**
+         * btn3.onclick: this function manages the logic of the "delete" button.
+         *               It calls the function to manage the corresponding operation on the database.
+         * @param del: variable holding the "delete" button of the current violation
+         */
         btn3.onclick=function(){
             del=document.getElementById('newid'+j.toString());
             deleteViolation(doc.getId());
@@ -304,7 +318,9 @@ function setClicks(j,doc){
         };
 };
 
-
+/**
+ * deleteViolation(id): this function deletes a violation from the cloud storage
+ */
 function deleteViolation(id)
 {
     database.collection("violations").doc(id).delete().then(function() {
@@ -314,6 +330,10 @@ function deleteViolation(id)
     });
 };
 
+/**
+ * validateViolation(id,newType): This functions updates the "type" and "validated" fildes of a violation in the storage
+ * @param violationRef: varable holding reference to the violation to update in the cloud storage.
+ */
 function validateViolation(id,newType){
 	
 	var violationRef = database.collection("violations").doc(id);

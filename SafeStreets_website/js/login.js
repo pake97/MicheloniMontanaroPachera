@@ -36,7 +36,7 @@ function login(email,password){
 }
 
 /**
- * logout(): this function manages the logout operation
+ * logout(): this function manages the logout operation.
  */
 function logout(){
     firebase.auth().signOut().then(function() {

@@ -1,9 +1,25 @@
+/**
+* firebase2.js
+* This module manages the logic and the UI of the "register" section of the page. It contains both UI and LOGIC components.
+* UI: there is a function to draw a container for each violation to display
+* LOGIC: There is a function to query the database in order to get all the validated violations.
+*         A function to retrieve the url of the images of each violation.
+*         A function to handle the logic of the buttons of each violation container.
+*/
 var database = firebase.firestore();
 var dbRef= database.collection("violations").where("validated","==",true);
 let body = document.getElementsByClassName("container")[1];
 let i=0;
 let heights=[600,500,400,300,250,200];
 
+
+/**
+ * dbRef.get(): this function queries the database in order to get the list of validated violations. 
+ *              for each violation's image it calls a function to retreive its url.
+ *              Then it calls the function to construct the container to hold it on the page.
+ * @param listPic:  list holding the urls of the images of each violation.
+ * @param list_promises: list holding the promises returned from the function to retrieve the url of the images.
+ */
 dbRef.get().then((querySnapshot) => {
 
     querySnapshot.forEach((doc) => {
@@ -46,6 +62,12 @@ dbRef.get().then((querySnapshot) => {
     });
 });
 
+/**
+ * getImgUrl(imgName): this function takes as imput the name in the storage of an image and returns its ulr.
+ * @param storeRef: reference to the cloud storage
+ * @param peomise: a promise to hold the request of getting image's url.
+ * @return promise: the function returns the promise.
+ */
 function getImgUrl(imgName){
     imgName = imgName.split("/")[imgName.split("/").length-1];
     var storeRef= firebase.storage().ref();
@@ -56,9 +78,14 @@ function getImgUrl(imgName){
     return promise;
 }
 
-function createDiv(doc){
 
-    //console.log(doc);
+/**
+ * createDiv(doc): this function manages the creation of the container to hold the violation in the page.
+ *                 Then it calls the function to to handle the logic of its buttons.
+ * @params div: a set of div to construct the container to hold violations.
+ * @param i: variable holding the progressive id of each violation container and its nested elements.
+ */
+function createDiv(doc){
     newdiv = document.createElement('div');  
     newdiv.id = 'newid'+i.toString();
     newdiv.className="violationwrapper";
@@ -101,7 +128,6 @@ function createDiv(doc){
     div7.appendChild(button);
     
 
-
     div8=document.createElement('div');
     div8.id="hidden"+i.toString();
     div8.className="hidden_vi";
@@ -130,7 +156,7 @@ function createDiv(doc){
     div12.setAttribute("style","width: 100%; display: inline-block; padding-top: 20px;padding-bottom: 20px;");
     div8.appendChild(div12);
 
-    //ciclo for, dim = 100/numvio
+    //for cycle, dim = 100/numvio
     let width= 99/doc.getNumPics();
     doc.getPics().forEach((image)=>{
         d = document.createElement('div');
@@ -190,12 +216,15 @@ function createDiv(doc){
     i++;
 };
 
+
+/**
+ * setClicks(j): This function manages the activation of buttons contained in each violation's container. 
+ * @params btn: set of buttons to activate
+ */
 function setClicks(j){
 
         btn=document.getElementById('see'+j.toString());
         btn1=document.getElementById('btnhide'+j.toString());
-        btn2=document.getElementById('val'+j.toString());
-        btn3=document.getElementById('del'+j.toString());
         btn.onclick=function(){
             divB1=document.getElementById('hidden'+j.toString());
             divrow1=document.getElementById('row'+j.toString());
