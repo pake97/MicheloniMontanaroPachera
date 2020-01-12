@@ -5,9 +5,9 @@
  * A function to add random accidents in the cloud storage.
  * A function to add random violations in the cloud storage.
  * A function to add random suggestions in the cloud storage.
- * A function build an empty statistics tree in the cloud storage.
- * A function to initialize all the statistics tree nodes to zero.
- * A function to compute all the statistics and update the whole statistics tree(based on all the validated violations).
+ * A function to build an empty statistics' tree in the cloud storage.
+ * A function to initialize all the statistics' tree's nodes to zero.
+ * A function to compute all the statistics(based on all the validated violations) and update the statistics' tree with the new values.
  * A function to compute daily statistics(based on daily validated violations).
  * A function to compute monthly suggestions(based on monthly validated violations).
  */
@@ -31,7 +31,7 @@ let violationsToAdd = 50;
 let suggestionsToAdd = 20;
 let Suggestion_threshold = 2;
 
-//coordinates of milano city
+//coordinates of Milano city
 let lat_lowerBound=45.443;
 let lat_upperBound=45.505;
 let long_lowerBound=9.150;
@@ -48,7 +48,7 @@ var suggestionsCorrespondings = {
 }
 
 /**
- * daysInMonth(year, month): this function take ad input an year and a month and returns the number of days in that month.
+ * daysInMonth(year, month): this function take as input an year and a month and returns the number of days in that month.
  * @return: number of days in the month.
  */
 function daysInMonth (year, month) {
@@ -56,7 +56,7 @@ function daysInMonth (year, month) {
 }
 
 /**
- * convertTimeZone(date): this function convert a date's hours according to the right timezone.
+ * convertTimeZone(date): this function convert a date's timestamp according to the right timezone.
  */
 function convertTimeZone(date){
     date.setHours(date.getHours()+offset);
@@ -95,13 +95,21 @@ function addYear(newYear){
     }
 }
 
-//FUNCTION TO GENERATES RANDOM NUMBERS
+/**
+ * getRandomInRange(from, to, fixed): this function generates random numbers.
+ * @param randomNumber: variable holding the random number generated.
+ * @return the random number generated.
+ */
 function getRandomInRange(from, to, fixed) {
     var randomNumber = ((Math.random() * (to - from) + from).toFixed(fixed) * 1);
     return randomNumber;
 }
 
-//FUNCTION TO GENERATE RANDOM LICENSE PLATES
+/**
+ * randomPlate(): this function generates random license plate numbers by calling the getRandomInRange() function.
+ * @param plate: variable holding the random license plate number.
+ * @return: random license plate number.
+ */
 function randomPlate() { 
     var plate = "";
 
@@ -116,7 +124,15 @@ function randomPlate() {
     return plate;
 } 
 
-//FUNCTION TO CONVERT COORDINATES INTO ADDRESS
+/**
+ * convertToStreet(latitude,longitude): this function takes as input some coordinates and convert them into
+ * the corresponding address by sending a request to the google geocoding API.
+ * @param latlng: variable holding parsed coordinates according to the https request structure.
+ * @param url: variable holding the https request for google geocoding API.
+ * @param request: variable holding the XMLHttpRequest() object.
+ * @param promise: variable holding the promise of getting the address from google geocoding API.
+ * @return: the function returns the promise of getting the address from google geocoding API.
+ */
 function convertToStreet(latitude,longitude){
 
     var latlng = latitude.toString() + "," + longitude.toString();
@@ -143,14 +159,23 @@ function convertToStreet(latitude,longitude){
             console.log("unable to connect to Google Geocoding API server");        
         };
     })
-    
     return promise;
 }
 
-//FUNCTION TO CONVERT ADDRESS INTO COORDINATES
+/**
+ * convertToCoordinates(address): this function takes as input an address and convert it into the corresponding
+ * coordinates using google Geocoding API.
+ * @param split: list holding variable's components splitted in correspondence of spaces.
+ * @param add: variable holding parsed addres according to the https request structure.
+ * @param url: variable holding the https request for goggole geocoding API.
+ * @param request: variable holding the XMLHttpRequest() object.
+ * @param promise: variable holding the promise of getting the address from google geocoding API.
+ * @param data: variable holding the data returned by google geocoding API.
+ * @param latitude: variable holding the latitude returend by google geocoding API.
+ * @param longitude: variable holding the longitude returend by google geocoding API.
+ * @return: the function returns the promise of getting the coordinates from google geocoding API.
+ */
 function convertToCoordinates(address){
-
-    //address parsing
     var split=address.split(" ");
     var add="";
     add+="1";
@@ -188,9 +213,16 @@ function convertToCoordinates(address){
     return promise;
 }
 
-//FUNCTION THAT RETURNS, FOR A STREET, THE VIOLATION WHICH HAS THE GREATEST NUMBER OF OCCURENCES
+/**
+ * countViolationsType(ViolationsList): This function returns, for a list of violations grouped by street, 
+ * the violation type which has the gretest number of occurrences.
+ * @param typeNumber: dictionary holding the number of occurrences of each violation's type.
+ * @param maximum: dictionary holding violation's type and the number of occurences of the violation which
+ *                 appears most times.
+ * @param types: variable holding the keys values of the typeNumber dictionaries.
+ * @return: the function returns the violation type which has the gretest number of occurrences and the number itself.
+ */
 function countViolationsType(ViolationsList){
-
     var typeNumber = {
         "cycle_parking": 0,
         "double_parking": 0,
@@ -221,7 +253,10 @@ function countViolationsType(ViolationsList){
     return maximum;
 }
 
-//FUNCTION TO GROUP OBJECTS ACCORDING TO A CERTAIN KEY
+/**
+ * groupBy(array, key): given a dictionary and a key, this function group it according to the same key values.
+ * @return a new dictionary grouped by the same key values.
+ */
 function groupBy(array, key) {
     return array.reduce((result, currentValue) => {
         (result[currentValue[key]] = result[currentValue[key]] || []).push(
@@ -231,24 +266,24 @@ function groupBy(array, key) {
     }, {});   
 }
 
-function initializeNode(node){
-
-    var promise = new Promise((resolve,reject) =>{
-        resolve( node.set({ Violation_number: 0 }))
-    }).catch(error =>{ console.log(error) })
-
-    return promise;
-
-}
-
-//FUNCTION TO GET CURRENT DATE AND TIME
+/**
+ * getDateTime: This function is activated through an https request and returns the current date and time.
+ * @param date: variable holding the current date.
+ * @return: the function returns an https response containing the current date and time.
+ */
 exports.getDateTime = functions.https.onRequest((request, response) => {
     var date = new Date();
     convertTimeZone(date);
     return response.send(date);
 });
 
-//FUNCTION TO ADD RANDOM ACCIDENTS IN THE CLOUD STORAGE
+/**
+ * addRandomAccidents: This function is activated through an https request and adds some random accidents into
+ * the cloud storage.
+ * @param accidentsPos: list holding all the accidents' position.
+ * @param accidentDate: list holding all the accidents' date.
+ * @param rootRef: variable holding the reference to the "accidents" collection of the cloud storage.
+ */
 exports.addRandomAccidents = functions.https.onRequest((request, response) => {
 
     var accidentsPos = [];
@@ -283,7 +318,13 @@ exports.addRandomAccidents = functions.https.onRequest((request, response) => {
     return;
 });
 
-//FUNCTION TO ADD RANDOM VIOLATIONS IN THE CLOUD STORAGE
+/**
+ * addRandomViolations: This function is activated through an https request and adds some random violations into
+ * the cloud storage.
+ * @param violationPos: list holding all the violations' position.
+ * @param violationDate: list holding all the violations' date.
+ * @param rootRef: variable holding the reference to the "violations" collection of the cloud storage.
+ */
 exports.addRandomViolations = functions.https.onRequest((request, response) => {
 
     var violationPos = [];
@@ -326,7 +367,12 @@ exports.addRandomViolations = functions.https.onRequest((request, response) => {
     return;
 });
 
-//FUNCTION TO ADD RANDOM SUGGESTIONS IN THE CLOUD STORAGE
+/**
+ * addRandomSuggestions: This function is activated through an https request and adds some random suggestions into
+ * the cloud storage.
+ * @param suggestionPos: list holding all the suggestions' position.
+ * @param rootRef: variable holding the reference to the "suggestions" collection of the cloud storage.
+ */
 exports.addRandomSuggestions = functions.https.onRequest((request, response) => {
 
     var suggestionPos = [];
@@ -347,7 +393,11 @@ exports.addRandomSuggestions = functions.https.onRequest((request, response) => 
     return;
 });
 
-//FUNCTION TO BUILT THE STATISTICS TREE
+/**
+ * buildStatisticsTree: This function is activated through an https request and 
+ * builds an statistics' tree in the cloud storage with all the values set to zero.
+ * @param Violation_number: nodes' values representing the number of violations with the node's time granularity.
+ */
 exports.buildStatisticsTree = functions.https.onRequest((request, response) => {
 
     for(let violation=0;violation<violations_list.length;violation++){
@@ -369,7 +419,11 @@ exports.buildStatisticsTree = functions.https.onRequest((request, response) => {
 
 });
 
-//FUNCTION TO INITIALIZE THE STATISTICS TREE'S VALUES TO ZERO
+/**
+ * initializeTree: This function is activated through an https request and 
+ * initialize the statistics tree by setting all its nodes' values to zero.
+ * @param Violation_number: nodes' values representing the number of violations with the node's time granularity.
+ */
 exports.initializeTree = functions.https.onRequest((request, response) => {
     db.collection("statistics").listDocuments().then(Violations =>{
         return Violations.forEach(ViolationType =>{
@@ -393,10 +447,22 @@ exports.initializeTree = functions.https.onRequest((request, response) => {
     }).catch(error => { console.log("Error initializing ever",error) })
 });
 
-//FUNCTION TO COMPUTE STATISTICS ON ALL THE VALIDATED VIOLATIONS STORED INTO THE DATABASE
+/**
+ * computeStatisticsOnce:  This function is activated through an https request and computes the statistics with all the
+ * validated violations of the cloud storage.
+ * @param validatedViolations: list holding all the validated violations of the cloud storage.
+ * @param yearsInTree: list holding all the years' branches values of the statistics tree.
+ * @param year: variable holding the year of the ith violation.
+ * @param month: variable holding the month of the ith violation.
+ * @param day: variable holding the day of the ith violation.
+ * @param rootRef: variable holding the reference to the "violation_type" collection of statistics' tree in the cloud storage.
+ * @param yearRef: variable holding the reference to the "year" collection of statistics' tree in the cloud storage.
+ * @param monthRef: variable holding the reference to the "month" collection of statistics' tree in the cloud storage.
+ * @param dayRef: variable holding the reference to the "day" collection of statistics' tree in the cloud storage.
+ */
 exports.computeStatisticsOnce = functions.https.onRequest((request, response) => {
 
-    //FUNCTION TO GET ALL THE VALIDATED VIOLATIONS
+    //function to get all the validated violations
     db.collection("violations").where("validated", "==", true).get().then(snapshot => {
 
         if(snapshot.length===0){
@@ -415,7 +481,7 @@ exports.computeStatisticsOnce = functions.https.onRequest((request, response) =>
             }
         })
 
-        //FUNCTION TO CHECKS IF THE STATISTICS TREE HAS ALL THE NECESSARY YEARS, OTHERWISE IT ADDS THEM
+        //function to checks if the statistics tree has all the necessary years' branches, otherwise it adds them.
         return db.collection("statistics").doc(violations_list[0]).collection("year").get().then(snap => {
             let yearsInTree = [];
             snap.forEach(doc => {
@@ -429,9 +495,8 @@ exports.computeStatisticsOnce = functions.https.onRequest((request, response) =>
             }
 
 
-            //UPDATE THE STATISTIC TREE WITH NEW VALUES
+            //update the statistics tree with the new values
             for(var j=0;j<validatedViolations.length;j++){
-
                 var year = validatedViolations[j].date.getFullYear().toString();
                 var month = (validatedViolations[j].date.getMonth()+1).toString();
                 var day = validatedViolations[j].date.getDate().toString();
@@ -451,7 +516,21 @@ exports.computeStatisticsOnce = functions.https.onRequest((request, response) =>
     }).catch(error => { console.log("Error getting the validated violations:",error) })
 });
 
-//FUNCTION TO COMPUTE STATISTICS DAILY
+/**
+ * computeStatisticsDaily:  This function is automatically activated once a day(at 23:59) to compute the daily statistics with all the
+ * daily validated violations of the cloud storage.
+ * @param start: variable holding the today's date with a 00:00 timestamp.
+ * @param end: variable holding the today's date with a 23:59 timestamp.
+ * @param validatedViolationsDaily: list holding all the daily validated violations of the cloud storage.
+ * @param yearsInTree: list holding all the years' branches values of the statistics tree.
+ * @param year: variable holding the year of the ith violation.
+ * @param month: variable holding the month of the ith violation.
+ * @param day: variable holding the day of the ith violation.
+ * @param rootRef: variable holding the reference to the "violation_type" collection of statistics tree in the cloud storage.
+ * @param yearRef: variable holding the reference to the "year" collection of statistics tree in the cloud storage.
+ * @param monthRef: variable holding the reference to the "month" collection of statistics tree in the cloud storage.
+ * @param dayRef: variable holding the reference to the "day" collection of statistics tree in the cloud storage.
+ */
 exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZone('Europe/Rome').onRun((context) => {
 
     var start = new Date();
@@ -465,7 +544,7 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
     end.setDate(start.getDate());
     end.setHours(23,59,0,0);
     
-    //FUNCTION TO GET ALL THE VALIDATED VIOLATIONS
+    //function to get all the daily validated violations.
     db.collection("violations").where("validated", "==", true).where("date", ">=", start).where("date", "<=", end).get().then(snapshot => {
 
         if(snapshot.length===0){
@@ -484,7 +563,7 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
             }
         })
 
-        //FUNCTION TO CHECKS IF CURRENT YEAR IS PRESENT IN THE STATISTC TREE
+        //function to checks if the statistics tree has the current year branch, otherwise it adds it.
         return db.collection("statistics").doc(violations_list[0]).collection("year").get().then(snap => {
             let yearsInTree = [];
             snap.forEach(doc => {
@@ -498,7 +577,7 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
                 yearsInTree.push(currentYear);
             }
 
-            //FUNCTION TO UPDATE VALUES OF THE STATISTICS TREE
+            //update the statistics tree with the new values
             for(var i=0;i<validatedViolationsDaily.length;i++){
 
                 var year = validatedViolationsDaily[i].date.getFullYear().toString();
@@ -520,7 +599,23 @@ exports.computeStatisticsDaily = functions.pubsub.schedule('59 23 * * *').timeZo
 
 });
 
-//FUNCTION TO COMPUTE SUGGESTIONS'S STATISTICS ON ALL THE VALIDATED VIOLATIONS(ONCE A MONTH)
+/**
+ * computeSuggestions:  This function is automatically activated once a month(the fist day of the month at 00:00) to compute 
+ * monthly suggestions on all the monthly validated violations of the cloud storage.
+ * @param currentDate: variable holding the today's date.
+ * @param start: variable holding the first day of the current month's date.
+ * @param end: variable holding the last day of the current month's date.
+ * @param ViolationsSuggestions: list holding all the monthly validated violations of the cloud storage.
+ * @param promise_list: list holding all the promises to convert the violations's coordinates
+ *                      into the corresponding address using Google geocoding API.
+ * @param streetViolations: list of dictionaries holding type and address of all the violation's returned by Google geocoding API.
+ * @param groupedViolations: list of dictionaries of all the violations grouped by the same street.
+ * @param street: list holding all the key values of the groupedViolations dictionary.
+ * @param suggestions: list of dictionaries holding all the suggestions to upload in the cloud storage.
+ * @param maximum: dictionary holding the type and the number of occurrences of the violation that appears most times
+ *                 on a certain street.
+ * @param promise: list holding all the promises to convert an address into the corresponding coordinates using google geocoding API.
+ */
 exports.computeSuggestions = functions.pubsub.schedule('00 00 1 * *').timeZone('Europe/Rome').onRun((context) => {
 
     var currentDate = new Date();
