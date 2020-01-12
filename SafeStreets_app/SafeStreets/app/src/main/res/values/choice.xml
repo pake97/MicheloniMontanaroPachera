@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="map_choice">
+        <item>Unsafe areas</item>
+        <item>Violations</item>
+    </string-array>
+    <string-array name="type_violation_choice">
+        <item>Double parking</item>
+        <item>Forbidden park</item>
+        <item>Park on cycle lane</item>
+        <item>Unpaid park</item>
+        <item>Park on sidewalk</item>
+        <item>Park on handicap spot</item>
+    </string-array>
+    <string-array name="time_choice">
+        <item>Ever</item>
+        <item>Year</item>
+        <item>Month</item>
+    </string-array>
+</resources>
